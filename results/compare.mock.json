@@ -1,0 +1,52 @@
+{
+  "n": 8,
+  "majority_baseline_acc": 0.5,
+  "methods": {
+    "zero-shot-NLI": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "flag_precision": 1.0,
+      "flag_recall": 1.0,
+      "confusion": [
+        [
+          4,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ]
+    },
+    "old-lexical": {
+      "accuracy": 0.75,
+      "macro_f1": 0.806,
+      "flag_precision": 0.75,
+      "flag_recall": 0.75,
+      "confusion": [
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ]
+    }
+  }
+}
