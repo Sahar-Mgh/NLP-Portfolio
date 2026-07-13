@@ -26,7 +26,7 @@ except Exception:
 
 CLAIMS_DIR = r"C:\0. Thesis\final\Cursor\claims"
 NOTES_DIR = r"C:\0. Thesis\final\Cursor\notes\clean notes\cleaned_json\clean"
-OUT = Path(r"C:\0. Thesis\faithcheck\data")
+OUT = Path(__file__).resolve().parent / "data"   # writes next to this script (capstone/data)
 
 
 def write_jsonl(p, rows):

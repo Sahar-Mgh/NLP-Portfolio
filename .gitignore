@@ -1,49 +1,18 @@
-# =============================================================================
-#  REAL PARTICIPANT DATA — never commit, never push. Held locally only.
-#  The repo ships synthetic *.mock.* stand-ins so the pipeline still runs on a
-#  clone. Anything matching the real patterns below stays on disk but untracked.
-# =============================================================================
-# Ignore ALL data and ALL result predictions by default ...
-data/*.jsonl
-results/*.jsonl
-results/*.json
-# ... except the synthetic mock versions, which are safe to publish:
-!data/*.mock.jsonl
-!results/*.mock.jsonl
-!results/*.mock.json
+# Portfolio-root ignores. Each deliverable folder (e.g. capstone/) keeps its own
+# .gitignore for its data-specific rules — capstone/.gitignore excludes the real,
+# sensitive participant data so it is never committed.
 
-# Labeling artefacts and the real worksheet quote real case-note text -> exclude.
-/labeling/
-worksheet.xlsx
-
-# =============================================================================
-#  Standard ignores
-# =============================================================================
 # Python
 __pycache__/
 *.py[cod]
-*.egg-info/
-.eggs/
-build/
-dist/
 
 # Virtual environments
 .venv/
 venv/
 env/
-.env
-
-# Hugging Face / model caches (models are downloaded on first run, never committed)
-.cache/
-hf_cache/
-*.safetensors
-*.bin
-*.pt
 
 # OS / editor cruft
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
-*~
-~$*.xlsx
