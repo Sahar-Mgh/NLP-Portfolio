@@ -43,11 +43,21 @@ powershell -ExecutionPolicy Bypass -File run.ps1   # Windows — mock demo
 ```
 
 This runs retrieval → NLI → aggregation → gate on the synthetic data and prints the
-evaluation table. It is a **smoke test** proving the pipeline works end-to-end and emits all
-three verdicts; the mock set is tiny, so the numbers are **not** the REPORT.md numbers. The
-first NLI run downloads two models (~a few hundred MB) from Hugging Face, then runs offline.
+evaluation table. It is a small demo (14 claims across 3 fictional trainees), so the numbers
+are **not** the REPORT.md numbers — but the cases are hand-built to *exhibit the report's
+findings*, not just execute. The first NLI run downloads two models (~a few hundred MB) from
+Hugging Face, then runs offline.
 
 **Reproducing the report** (only on the real institute data, held locally): `REAL=1 bash run.sh`.
+
+### What the synthetic demo is built to show
+
+| case (fictional) | what it demonstrates |
+| --- | --- |
+| `s1_c4` "ist **nicht unzuverlässig**" → supported | NLI beats the lexical baseline's **negation shortcut** (lexical mis-flags the double negative) |
+| `s3_c2` a date-bundled abstractive claim → missed | **granularity mismatch**: no single note entails the summary, so a *supported* claim is missed ([REPORT.md §6](REPORT.md)) |
+| `s3_c3` "bleibt ausgeglichen" vs a stress note → flagged | a **real contradiction on the same topic** is correctly kept by the gate |
+| `s3_c4` off-topic negation note trips raw NLI | the **NER gate tradeoff**: the *hard* gate removes the false alarm, the *soft* gate keeps it ([REPORT.md §5.2](REPORT.md)) |
 
 ## Results on the real data (from [REPORT.md](REPORT.md) §5.1)
 

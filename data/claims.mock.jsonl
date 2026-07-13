@@ -6,3 +6,9 @@
 {"claim_id": "s2_c2", "student_id": "s2", "area": "Fehlzeiten", "claim": "Die Fehlzeiten von Frau Winter sind gesunken."}
 {"claim_id": "s2_c3", "student_id": "s2", "area": "Förderbedarf", "claim": "Frau Winter benötigt Unterstützung im Bereich Farbe."}
 {"claim_id": "s2_c4", "student_id": "s2", "area": "Arbeitsverhalten", "claim": "Frau Winter arbeitet sehr konzentriert."}
+{"claim_id": "s3_c1", "student_id": "s3", "area": "Arbeitsverhalten", "claim": "Herr Demir arbeitet sorgfältig und hält seinen Arbeitsplatz ordentlich."}
+{"claim_id": "s3_c2", "student_id": "s3", "area": "Arbeitsverhalten", "claim": "Herr Demir hat seit April 2024 kontinuierlich an seiner Pünktlichkeit gearbeitet und erscheint inzwischen zuverlässig zum Dienst."}
+{"claim_id": "s3_c3", "student_id": "s3", "area": "psychische Stabilität", "claim": "Herr Demir bleibt in Stresssituationen ruhig und ausgeglichen."}
+{"claim_id": "s3_c4", "student_id": "s3", "area": "personale Kompetenzen", "claim": "Herr Demir kann seine Impulse gut kontrollieren."}
+{"claim_id": "s3_c5", "student_id": "s3", "area": "Sonstiges", "claim": "Herr Demir interessiert sich für Musik."}
+{"claim_id": "s3_c6", "student_id": "s3", "area": "fachliche Basiskompetenzen", "claim": "Herr Demir verfügt über gute feinmotorische Fähigkeiten."}
