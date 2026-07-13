@@ -11,7 +11,7 @@ Solo portfolio — **Sahar Moqtaderi contributed 100%** to every deliverable bel
 
 | # | Deliverable | Contribution | Status |
 |---|---|---|---|
-| 1 | Paper presentation | Sahar Moqtaderi — 100% | _to add_ |
+| 1 | Paper presentation — Poliak et al. (2018), hypothesis-only NLI | Sahar Moqtaderi — 100% | ✅ [`presentation/`](presentation/) |
 | 2 | Course participation (tutorial, poetry slam, DAAD event) | Sahar Moqtaderi — 100% | _to add_ |
 | 3 | Competition result | Sahar Moqtaderi — 100% | _to add_ |
 | 4 | **Capstone — LuV-FaithCheck** | Sahar Moqtaderi — 100% | ✅ [`capstone/`](capstone/) |
@@ -35,8 +35,16 @@ bash run.sh          # runs the pipeline on the bundled synthetic demo data
 > ⚠️ The capstone ships **synthetic demo data only**. The real (sensitive) participant data
 > is kept off GitHub and never committed — see the capstone README for the reasoning.
 
-### 1–3. Presentation · Participation · Competition
+### 1. Paper presentation → [`presentation/`](presentation/)
 
-_Add each deliverable here as it is ready — e.g. `presentation/` (slides or PDF),
-`participation/` (evidence of the tutorial / poetry slam / DAAD event), `competition/`
-(final score or rank) — and fill in the Status column above._
+Slides presenting **Poliak et al. (2018), *Hypothesis-Only Baselines in Natural Language
+Inference*** (*SEM 2018) — the paper showing NLI models often predict the label from the
+hypothesis alone (annotation artifacts), which motivates always reporting a hypothesis-only /
+claim-only baseline. That is exactly the baseline logic the capstone uses, so the two
+deliverables connect. File:
+[`presentation/hypothesis_only_nli_presentation.pptx`](presentation/hypothesis_only_nli_presentation.pptx).
+
+### 2–3. Participation · Competition
+
+_Add each as it is ready — `participation/` (evidence of the tutorial / poetry slam / DAAD
+event) and `competition/` (final score or rank) — and fill in the Status column above._
