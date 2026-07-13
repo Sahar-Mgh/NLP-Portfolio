@@ -1,4 +1,4 @@
-# NLP Portfolio — Sahar Moqtaderi
+# NLP Portfolio — Sahar Moghtaderi
 
 Master's NLP course portfolio. Per the course scheme, the portfolio bundles the four
 deliverables in a single repository; this top-level README records the contribution to
@@ -6,15 +6,15 @@ each component (as the course requires).
 
 ## Contributions
 
-Solo portfolio — **Sahar Moqtaderi contributed 100%** to every deliverable below.
+Solo portfolio — **Sahar Moghtaderi contributed 100%** to every deliverable below.
 *(If any deliverable was produced in a team, adjust that row.)*
 
 | # | Deliverable | Contribution | Status |
 |---|---|---|---|
-| 1 | Paper presentation — Poliak et al. (2018), hypothesis-only NLI | Sahar Moqtaderi — 100% | ✅ [`presentation/`](presentation/) |
-| 2 | Course participation (tutorial, poetry slam, DAAD event) | Sahar Moqtaderi — 100% | _to add_ |
-| 3 | Competition result | Sahar Moqtaderi — 100% | _to add_ |
-| 4 | **Capstone — LuV-FaithCheck** | Sahar Moqtaderi — 100% | ✅ [`capstone/`](capstone/) |
+| 1 | Paper presentation — Poliak et al. (2018), hypothesis-only NLI | Sahar Moghtaderi — 100% | ✅ [`presentation/`](presentation/) |
+| 2 | Course participation (tutorial, poetry slam, DAAD event) | Sahar Moghtaderi — 100% | _to add_ |
+| 3 | Competition result | Sahar Moghtaderi — 100% | _to add_ |
+| 4 | **Capstone — LuV-FaithCheck** | Sahar Moghtaderi — 100% | ✅ [`capstone/`](capstone/) |
 
 ## Deliverables
 

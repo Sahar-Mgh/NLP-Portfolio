@@ -30,7 +30,7 @@ notes, run natural-language inference (NLI), and tell a reviewer which sentences
 
 ## Contributions
 
-**Solo project — Sahar Moqtaderi contributed 100% to all components** (idea, dataset
+**Solo project — Sahar Moghtaderi contributed 100% to all components** (idea, dataset
 construction, method, implementation, hand-labelling, evaluation, and write-up).
 
 ## Quickstart (runs on the bundled synthetic data)
