@@ -18,7 +18,7 @@ infeasible, so the goal is an assistant that flags sentences a reviewer should l
 at — the "red squiggle" of the thesis — while running **fully on-premise** (the data
 is sensitive and may not leave the institute).
 
-We frame this as **grounded fact-checking / Natural Language Inference (NLI)**. For a
+I frame this as **grounded fact-checking / Natural Language Inference (NLI)**. For a
 report **claim** *c* and a candidate **note** *e* (the evidence), the system decides:
 
 | label | NLI relation | meaning |
