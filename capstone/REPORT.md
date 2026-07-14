@@ -42,7 +42,7 @@ which links each participant's claims file to their notes file via the trainee I
   title). Notes are pre-segmented into sentences, which matters because NLI models
   operate best at sentence granularity (Laban et al., 2022).
 
-For evaluation we hand-labelled a **stratified 90-claim sample** (proportional across
+For evaluation I hand-labelled a **stratified 90-claim sample** (proportional across
 the 5 participants) with the three labels. The gold distribution is **49 supported /
 38 not_mentioned / 3 contradicted** — contradictions are genuinely rare in real LuV
 data, so the **majority-class baseline accuracy is 0.544**. Labels were assigned from
@@ -66,7 +66,7 @@ evaluation and threshold tuning — never for training.
 
 The pipeline (`faithcheck.py`) is training-free and runs on a laptop CPU:
 
-1. **Retrieval (sentence embeddings).** For each claim, we embed the claim and the
+1. **Retrieval (sentence embeddings).** For each claim, I embed the claim and the
    trainee's notes with a multilingual Sentence-BERT
    (`paraphrase-multilingual-MiniLM-L12-v2`) and retrieve the top *k = 8* notes by
    cosine similarity. Note embeddings are pre-computed once per trainee so the method
@@ -74,9 +74,9 @@ The pipeline (`faithcheck.py`) is training-free and runs on a laptop CPU:
 2. **Scoring (zero-shot NLI / transfer learning).** Each (note, claim) pair is scored
    by a multilingual NLI transformer,
    `MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`, pretrained on XNLI and
-   applied **zero-shot** — we transfer its entailment/neutral/contradiction knowledge
+   applied **zero-shot** — I transfer its entailment/neutral/contradiction knowledge
    to the LuV domain without fine-tuning.
-3. **Aggregation (SummaC-style).** Following SummaC (Laban et al., 2022), we aggregate
+3. **Aggregation (SummaC-style).** Following SummaC (Laban et al., 2022), I aggregate
    over the retrieved notes: the claim's *support score* is the maximum entailment
    probability, and its *contradiction score* is the maximum contradiction
    probability. A verdict rule with thresholds τ then assigns supported /
@@ -89,7 +89,7 @@ The pipeline (`faithcheck.py`) is training-free and runs on a laptop CPU:
    pair and is useless for gating, so the gate uses **SKILL/AREA** entities only: a
    contradiction is only counted if the note shares a topical entity with the claim.
 
-We compare three systems, all through the identical retrieve→aggregate harness so the
+I compare three systems, all through the identical retrieve→aggregate harness so the
 comparison isolates the scorer:
 
 - **old lexical** — the previous project's TF-IDF-similarity + negation-cue heuristic;
@@ -153,12 +153,12 @@ so the gain over raw NLI should be read as *modest but consistent*.)
 
 ### 5.3 Negative result — confidence is not calibrated (entropy rejected)
 
-We tested whether Shannon-entropy-based **selective prediction** could improve results
+I tested whether Shannon-entropy-based **selective prediction** could improve results
 by abstaining on low-confidence claims. The risk-coverage curve is **inverted**: on the
 most-confident 25% of predictions accuracy is **0.409**, *below* the 0.511 over all
 claims. The reason is diagnostic: the model's high-confidence predictions include its
 confidently-wrong false contradictions (contradiction ≈ 0.9–1.0). Entropy would
-therefore tell us to trust exactly the wrong predictions, so we **do not** adopt it —
+therefore tell us to trust exactly the wrong predictions, so I **do not** adopt it —
 this is reported as a calibration finding, and it independently motivates the entity
 gate.
 
@@ -183,7 +183,7 @@ fully bridge. This is precisely the limitation documented for MiniCheck (Tang et
 synthesis across multiple sentences. Consequently, system **accuracy sits at roughly the
 majority baseline** — not because the model is uninformative (its macro-F1 and flag
 recall are well above baseline and the lexical system) but because the imbalance and the
-missed-support bucket cap raw accuracy. We report this openly rather than selecting a
+missed-support bucket cap raw accuracy. I report this openly rather than selecting a
 flattering metric.
 
 ## 7. NLP techniques used (course mapping)
@@ -207,7 +207,7 @@ Sub-word tokenization (inside the transformer tokenizers) and the attention mech
 - **SummaC** (Laban et al., 2022) — NLI-based inconsistency detection with sentence-level
   aggregation; the methodological basis for our aggregation step.
 - **MiniCheck** (Tang et al., 2024) — retrieve-then-check grounded fact-checking; documents
-  the multi-sentence limitation we observe.
+  the multi-sentence limitation I observe.
 - **FEVER** (Thorne et al., 2018) — the supported/refuted/not-enough-info claim-verification
   task our labels mirror.
 - **AlignScore** (Zha et al., 2023) — unified alignment metric for factual consistency.
