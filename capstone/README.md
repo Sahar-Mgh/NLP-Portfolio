@@ -70,8 +70,7 @@ should check (contradicted or not-mentioned), how many the system actually surfa
 
 Short version: zero-shot NLI clearly beats the lexical baseline on flagging (0.80 vs 0.54
 recall) and recovers all three contradictions. Overall accuracy stays near the majority
-baseline because the classes are imbalanced and some claims are genuinely hard — I discuss
-this honestly in the report.
+baseline because the classes are imbalanced and some claims are genuinely hard.
 
 ## How it works
 
