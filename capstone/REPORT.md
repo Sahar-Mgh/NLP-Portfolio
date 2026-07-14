@@ -54,6 +54,17 @@ applying case-management domain knowledge), so inter-annotator agreement is not 
 
 ## 3. Method
 
+**Why zero-shot rather than a trained model.** An earlier version of this project included
+both a lexical baseline — the TF-IDF + negation-cue heuristic that appears here as *old
+lexical* (§5.1) — and a fine-tuned model (LoRA/PEFT). The fine-tuned model turned out to
+exploit an annotation artifact instead of genuinely weighing claim against evidence: a
+*hypothesis-only* baseline that never sees the notes matched it and recovered every
+contradiction, so the model was riding a negation shortcut — the Poliak et al. (2018)
+phenomenon discussed in §8. With only 90 labelled claims (3 contradictions) there is in any
+case almost no signal to fine-tune on without overfitting. I therefore drop training entirely
+and transfer an XNLI-pretrained NLI model zero-shot, using the labelled set only for
+evaluation and threshold tuning — never for training.
+
 The pipeline (`faithcheck.py`) is training-free and runs on a laptop CPU:
 
 1. **Retrieval (sentence embeddings).** For each claim, we embed the claim and the

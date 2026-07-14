@@ -8,7 +8,10 @@ inference (NLI)** to decide whether the claim is **supported**, **contradicted**
 relied on as a citation plus a confidence score.
 
 It's zero-shot and runs locally on CPU, which matters because the real data is
-sensitive and can't leave the institute.
+sensitive and can't leave the institute. Going zero-shot was deliberate: an earlier version of
+the project fine-tuned a model (LoRA/PEFT), but it learned a negation shortcut — a
+hypothesis-only baseline that never sees the notes did just as well — so I dropped training and
+use the labels only for evaluation.
 
 The full write-up — method, experiments, error analysis, references — is in
 [REPORT.md](REPORT.md). This README is the short "what is it / how to run it" version.
