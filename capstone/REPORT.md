@@ -11,8 +11,7 @@
 
 ## 1. Motivation and task
 
-The project operationalises the core of my master's thesis (Don Bosco /
-Berufsbildungswerk): case managers write LuV reports that summarise a trainee's
+The case managers write LuV reports that summarise a trainee's
 progress, and those summary sentences should be *faithful* to the underlying case
 notes. Manually cross-checking every report sentence against hundreds of notes is
 infeasible, so the goal is an assistant that flags sentences a reviewer should look
