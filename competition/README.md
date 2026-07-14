@@ -6,6 +6,6 @@ Portfolio deliverable #3 (competition).
 
 **My result:** team **Sahar Mgh** — rank **1225 / ~1864 teams**, score **11.105** (public leaderboard).
 
-**tHE nOTEBOOK:** https://www.kaggle.com/code/saharmgh/notebook3
+**The Notebook:** https://www.kaggle.com/code/saharmgh/notebook3
 
 Leaderboard: <https://www.kaggle.com/competitions/ai-agent-security-multi-step-tool-attacks/leaderboard>
