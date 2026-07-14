@@ -100,7 +100,7 @@ Output per claim: supported / contradicted / not_mentioned, the note that drove 
 - `results/*.mock.*` — demo outputs
 - `REPORT.md` — the full write-up
 
-## NLP techniques used (course requirement)
+## NLP techniques used 
 
 Sentence embeddings (SBERT retrieval), transfer learning (zero-shot NLI, no fine-tuning),
 pretrained language models (mDeBERTa / MiniLM), evaluation methods (macro-F1, per-class
