@@ -1,105 +1,97 @@
-# LuV-FaithCheck — Note-Grounded Faithfulness Checking for German Vocational Reports
+# LuV-FaithCheck
 
-A **zero-shot, locally-run** system that checks whether each sentence in a German
-*Leistungs- und Verhaltensbeurteilung* (LuV) report is **grounded in the trainee's case
-notes** — flagging unsupported or contradicted claims with a **citation** and a
-**confidence score**. It is the "red squiggle" for report writing: retrieve the relevant
-notes, run natural-language inference (NLI), and tell a reviewer which sentences to check.
+This is my capstone project for the NLP course. It's a small tool that checks whether the
+sentences in a German vocational report (a *Leistungs- und Verhaltensbeurteilung*, or "LuV")
+are actually supported by the trainee's case notes. It flags the sentences that look
+unsupported or contradicted, and for each one it points to the note it used and gives a
+confidence score. Basically a "is this claim actually backed up?" checker for report writing.
 
-> Runs fully on-premise on a laptop CPU. No training, no data leaves the machine —
-> which is the point, because the underlying data is sensitive.
+It runs locally on a normal laptop (no GPU needed) and doesn't train anything, which matters
+because the real data is sensitive and can't leave the institute.
 
-**Full write-up (method, experiments, error analysis, references):** see **[REPORT.md](REPORT.md)**.
+The full write-up — method, experiments, error analysis, references — is in
+[REPORT.md](REPORT.md). This README is just the short "what is it / how do I run it" version.
 
----
+## About the data (please read)
 
-> ## 🔒 About the data
->
-> The reported results were produced on **real, anonymised case-note data about actual
-> rehabilitation participants**, which — by design and by data-protection obligation —
-> **does not leave the institute** and is therefore **not included in this repository**.
->
-> This repo ships small **synthetic (`*.mock.*`) stand-ins** with the same schema so the
-> pipeline runs on a clone. The real numbers in [REPORT.md](REPORT.md) can be reproduced
-> only on the real data, on the institute's own machines.
->
-> `.gitignore` is configured so that any real `data/*.jsonl` or `results/*.jsonl` on a
-> local machine is **never tracked or pushed** — only `*.mock.*` files are committed.
+The results in the report come from real, anonymised case notes about actual rehabilitation
+participants. That data isn't allowed to leave the institute, so it is **not** in this repo.
 
----
+Instead I included small **made-up** example files (the `*.mock.*` ones) with the same format,
+so the code still runs if you clone it. The real numbers in the report can only be reproduced
+on the real data, on the institute's own machines. The `.gitignore` is set up so the real data
+can never get committed by accident — only the made-up files are tracked.
 
-## Contributions
-
-**Solo project — Sahar Moghtaderi contributed 100% to all components** (idea, dataset
-construction, method, implementation, hand-labelling, evaluation, and write-up).
-
-## Quickstart (runs on the bundled synthetic data)
+## How to run it
 
 ```bash
-pip install -r requirements.txt   # CPU is fine; see requirements.txt if torch won't resolve
+pip install -r requirements.txt
 
-bash run.sh                       # macOS / Linux  — mock demo
-powershell -ExecutionPolicy Bypass -File run.ps1   # Windows — mock demo
+bash run.sh                                        # Linux / macOS
+powershell -ExecutionPolicy Bypass -File run.ps1   # Windows
 ```
 
-This runs retrieval → NLI → aggregation → gate on the synthetic data and prints the
-evaluation table. It is a small demo (14 claims across 3 fictional trainees), so the numbers
-are **not** the REPORT.md numbers — but the cases are hand-built to *exhibit the report's
-findings*, not just execute. The first NLI run downloads two models (~a few hundred MB) from
-Hugging Face, then runs offline.
+This runs the whole thing on the made-up demo data and prints an evaluation table. It's a
+tiny demo (14 example claims across 3 fictional trainees), so the numbers won't match the
+report — but I made up the examples on purpose so they show the things I talk about in the
+report (see below). The first run downloads two models from Hugging Face (a few hundred MB),
+then works offline after that.
 
-**Reproducing the report** (only on the real institute data, held locally): `REAL=1 bash run.sh`.
+If you actually have the real data locally, `REAL=1 bash run.sh` reproduces the report.
 
-### What the synthetic demo is built to show
+### What the demo examples are meant to show
 
-| case (fictional) | what it demonstrates |
-| --- | --- |
-| `s1_c4` "ist **nicht unzuverlässig**" → supported | NLI beats the lexical baseline's **negation shortcut** (lexical mis-flags the double negative) |
-| `s3_c2` a date-bundled abstractive claim → missed | **granularity mismatch**: no single note entails the summary, so a *supported* claim is missed ([REPORT.md §6](REPORT.md)) |
-| `s3_c3` "bleibt ausgeglichen" vs a stress note → flagged | a **real contradiction on the same topic** is correctly kept by the gate |
-| `s3_c4` off-topic negation note trips raw NLI | the **NER gate tradeoff**: the *hard* gate removes the false alarm, the *soft* gate keeps it ([REPORT.md §5.2](REPORT.md)) |
+I picked the fictional cases so the demo actually shows my findings instead of just running:
 
-## Results on the real data (from [REPORT.md](REPORT.md) §5.1)
+- **`s1_c4`** ("ist nicht unzuverlässig") — the old keyword baseline gets tricked by the
+  double negative and flags it; the NLI model gets it right.
+- **`s3_c2`** (a claim with a specific date) — no single note states the whole thing, so the
+  tool misses a claim that's actually supported. This is the main limitation I found (report §6).
+- **`s3_c3`** ("stays calm under stress" vs a note about him getting stressed) — a real
+  contradiction on the same topic, correctly flagged.
+- **`s3_c4`** — an off-topic note with a negative word that fools the raw NLI; the NER step
+  is meant to catch this (report §5.2).
 
-Evaluated on **90 hand-labelled gold claims**; majority-class baseline accuracy **0.544**.
-The headline improvement is **flag recall** (the deployable "needs-review" signal), which is
-robust to the class imbalance; the NER gate is a small, honest refinement (see REPORT.md §5).
+## Results (on the real data, from the report)
 
-| system                     | macro-F1  | accuracy | flag recall | true contradictions kept |
-| -------------------------- | :-------: | :------: | :---------: | :----------------------: |
-| majority baseline          |   ~0.23   |  0.544   |     —       |           —              |
-| old lexical (TF-IDF + neg.)|   0.329   |  0.456   |    0.54     |          0 / 3           |
-| zero-shot NLI              |   0.452   |  0.511   |    0.80     |          3 / 3           |
-| **NLI + NER soft-gate**    | **0.478** |  0.533   |    0.80     |          3 / 3           |
+Tested on 90 hand-labelled examples. If you just always guess the most common label you get
+0.544 accuracy, so that's the bar to beat. The number I care about most is **flag recall** —
+out of the sentences a reviewer really should double-check, how many the tool actually catches.
 
-## How it works (one paragraph)
+| system | macro-F1 | accuracy | flag recall | contradictions caught |
+| --- | :-: | :-: | :-: | :-: |
+| always-guess-majority | ~0.23 | 0.544 | — | — |
+| old keyword baseline | 0.329 | 0.456 | 0.54 | 0 / 3 |
+| zero-shot NLI | 0.452 | 0.511 | 0.80 | 3 / 3 |
+| NLI + NER gate | 0.478 | 0.533 | 0.80 | 3 / 3 |
 
-For each report **claim**, embed it and the trainee's notes with a multilingual
-Sentence-BERT and retrieve the top *k = 8* notes; score each (note, claim) pair with a
-zero-shot multilingual NLI model (`mDeBERTa-v3-xnli`); aggregate SummaC-style (max
-entailment = support, max contradiction = flag); and gate contradictions by a lightweight
-domain NER so an off-topic note cannot raise a false alarm. Output: `supported` /
-`contradicted` / `not_mentioned`, plus the driving note (citation) and a confidence.
+Short version: the NLI approach clearly beats the old keyword one at flagging (0.80 vs 0.54
+recall). The plain accuracy stays near the baseline because the data is imbalanced and some
+claims are genuinely hard — I'm honest about that in the report.
 
-## Repository layout
+## How it works (short version)
 
-| path | what it is |
-| --- | --- |
-| `faithcheck.py` | the pipeline: retrieve → NLI/lexical score → aggregate → gate → verdict |
-| `evaluate.py` | scores predictions vs. gold labels; multi-method comparison + disagreement table |
-| `ner.py` | offline lexicon/regex domain NER used by the contradiction gate |
-| `tune.py` | dev/test threshold tuning (avoids threshold cherry-picking) |
-| `build_dataset.py`, `make_worksheet.py`, `labels_from_worksheet.py` | how the real dataset and gold labels were built (run against local institute data; provenance) |
-| `data/*.mock.jsonl` | synthetic claims / notes / labels so the pipeline runs without real data |
-| `results/*.mock.*` | evaluation outputs on the synthetic data |
-| `REPORT.md` | full academic report (method, results, error analysis, references) |
+For each claim in the report: embed it and the trainee's notes and take the 8 most similar
+notes; run a multilingual NLI model on each (note, claim) pair; use the strongest entailment
+as "support" and the strongest contradiction as a "flag"; and use a small keyword-based NER
+step so an off-topic note can't set off a false alarm. Output per claim: supported /
+contradicted / not_mentioned, plus which note it used and a confidence.
 
-> The real `data/*.jsonl`, real `results/*.jsonl`, and the labelling worksheets are held
-> locally and git-ignored — see the data note above. The labelling methodology is described
-> in [REPORT.md §2](REPORT.md).
+## Files
 
-## NLP techniques used (course mapping)
+- `faithcheck.py` — the main pipeline (retrieve → score → aggregate → gate → verdict)
+- `evaluate.py` — scores the predictions against the labels and compares methods
+- `ner.py` — the little keyword NER for the topic gate
+- `tune.py` — threshold tuning on a dev/test split
+- `build_dataset.py`, `make_worksheet.py`, `labels_from_worksheet.py` — how I built the
+  dataset and labels from the real files (these need that data to run)
+- `data/*.mock.jsonl` — the made-up demo data
+- `results/*.mock.*` — demo outputs
+- `REPORT.md` — the full write-up
 
-Embeddings (SBERT retrieval) · Transfer learning (zero-shot XNLI→LuV) · Language models
-(mDeBERTa / MiniLM) · Evaluation methods (macro-F1, per-class, majority baseline, dev/test
-tuning) · Named-entity recognition (contradiction gate). Detail in [REPORT.md §7](REPORT.md).
+## NLP methods I used (for the course requirement)
+
+Sentence embeddings (for retrieval), transfer learning (zero-shot NLI with no fine-tuning),
+pretrained language models (mDeBERTa / MiniLM), a proper evaluation (macro-F1, per-class
+scores, baselines, threshold tuning), and named-entity recognition (the topic gate). More
+detail in the report (§7).
