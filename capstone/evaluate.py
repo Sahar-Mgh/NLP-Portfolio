@@ -1,20 +1,19 @@
 """
-evaluate.py -- score faithcheck predictions against human labels, and COMPARE methods.
-======================================================================================
-Pass one predictions file, or several, to get a side-by-side old-vs-new table.
+Score faithcheck predictions against human labels, and compare methods.
 
-  * per method : accuracy, macro-F1, per-class P/R/F1, confusion matrix,
-                 and binary flag ("needs_review") precision/recall
-  * baseline   : majority-class accuracy (the bar every method must clear)
-  * with 2 methods: a DISAGREEMENTS table -- the claims where they differ, with
-                    gold and a mark for who is right (the money table for the report:
-                    "here are the claims the old lexical model gets wrong that the
-                    zero-shot NLI model fixes").
+Pass one or more predictions files to get a side-by-side table:
+  - per method: accuracy, macro-F1, per-class precision/recall/F1, confusion
+    matrix, and precision/recall on the binary "needs_review" flag
+  - majority-class baseline accuracy
+  - with exactly two methods: a table of the claims where they disagree, showing
+    the gold label and which method got it right
 
-Input : predictions.jsonl x N (from faithcheck.py) + labels.jsonl {claim_id, label}
-Run   :
+Inputs: one or more predictions.jsonl files (from faithcheck.py) and a
+labels.jsonl of {claim_id, label}.
+
+Usage:
   python evaluate.py --preds results/preds_nli.mock.jsonl results/preds_lexical.mock.jsonl \
-                     --names zero-shot-NLI old-lexical --labels data/labels.mock.jsonl
+                     --names zero-shot-NLI lexical --labels data/labels.mock.jsonl
 """
 import argparse
 import json
@@ -79,7 +78,7 @@ def main():
         y_bin_pred = [pm[i]["binary"] for i in ids]
         results[nm] = metrics_for(y_true, y_pred, y_bin_true, y_bin_pred)
 
-    # ---- comparison table ----
+    # comparison table
     print(f"=== Comparison  (n={len(ids)}, majority-baseline acc={maj:.3f}) ===")
     print(f"{'method':18s} {'acc':>6s} {'macroF1':>8s} {'flag_P':>7s} {'flag_R':>7s} {'flag_F1':>8s}")
     for nm in names:
@@ -87,7 +86,7 @@ def main():
         print(f"{nm:18s} {m['accuracy']:6.3f} {m['macro_f1']:8.3f} "
               f"{m['flag_p']:7.3f} {m['flag_r']:7.3f} {m['flag_f1']:8.3f}")
 
-    # ---- per-method per-class detail ----
+    # per-method per-class detail
     for nm in names:
         m = results[nm]
         print(f"\n--- {nm}: per-class ---")
@@ -99,7 +98,7 @@ def main():
         for l, row in zip(LABELS, m["confusion"]):
             print(f"  {l:14s} {row}")
 
-    # ---- disagreements (only when exactly 2 methods) ----
+    # disagreements (only when exactly 2 methods)
     if len(names) == 2:
         a, b = names
         print(f"\n=== Disagreements: {a} vs {b} ===")

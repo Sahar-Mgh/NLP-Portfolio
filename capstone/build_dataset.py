@@ -1,14 +1,15 @@
 """
-build_dataset.py -- convert Sahar's real LuV data into the faithcheck schema.
-=============================================================================
-Reads the 5 per-participant claims files and 5 per-participant notes files and
-writes the two JSONL files the pipeline expects:
+Convert the LuV case-note data into the faithcheck schema.
+
+Reads the per-participant claims and notes files and writes the two JSONL
+files the pipeline expects:
 
   data/claims.jsonl : {claim_id, student_id, area, claim}
   data/notes.jsonl  : {note_id, student_id, date, author, title, text}
 
-Linkage: claims carry student_id "TN-0000004540"; notes carry tn "0000004540",
-so a note's student_id = "TN-" + tn.  We verify every claim's student has notes.
+Claims carry a student_id like "TN-0000000000"; notes carry the bare tn
+"0000000000", so a note's student_id is "TN-" + tn. Every claim's student
+is checked to have matching notes.
 
 Run: python build_dataset.py
 """
@@ -24,8 +25,10 @@ try:
 except Exception:
     pass
 
-CLAIMS_DIR = r"C:\0. Thesis\final\Cursor\claims"
-NOTES_DIR = r"C:\0. Thesis\final\Cursor\notes\clean notes\cleaned_json\clean"
+# Raw per-participant claims/notes folders. Point these at your data with the
+# CLAIMS_DIR / NOTES_DIR env vars, or drop the JSON files under ./claims and ./notes.
+CLAIMS_DIR = os.environ.get("CLAIMS_DIR", "claims")
+NOTES_DIR = os.environ.get("NOTES_DIR", "notes")
 OUT = Path(__file__).resolve().parent / "data"   # writes next to this script (capstone/data)
 
 
@@ -36,7 +39,7 @@ def write_jsonl(p, rows):
 
 
 def main():
-    # ---- claims ----
+    # claims
     claims, claim_students = [], Counter()
     for f in sorted(glob.glob(os.path.join(CLAIMS_DIR, "*.json"))):
         d = json.load(open(f, encoding="utf-8"))
@@ -49,7 +52,7 @@ def main():
                            "area": c.get("section") or "", "claim": txt})
             claim_students[sid] += 1
 
-    # ---- notes ----
+    # notes
     notes, note_students = [], Counter()
     for f in sorted(glob.glob(os.path.join(NOTES_DIR, "*.json"))):
         arr = json.load(open(f, encoding="utf-8"))
@@ -67,7 +70,7 @@ def main():
     write_jsonl(OUT / "claims.jsonl", claims)
     write_jsonl(OUT / "notes.jsonl", notes)
 
-    # ---- report + linkage check ----
+    # report + linkage check
     print(f"claims.jsonl : {len(claims)} claims across {len(claim_students)} students")
     print(f"notes.jsonl  : {len(notes)} note-sentences across {len(note_students)} students\n")
     print(f"{'student_id':16s} {'claims':>7s} {'notes':>7s}")

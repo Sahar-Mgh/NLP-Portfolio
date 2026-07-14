@@ -1,26 +1,23 @@
 #!/usr/bin/env bash
-# ---------------------------------------------------------------------------
-# Runs the full pipeline end-to-end and prints the evaluation table.
+# Run the full pipeline and print the evaluation table.
 #
-# DEFAULT: runs on the bundled SYNTHETIC (mock) data that ships with the repo.
-#   This is a smoke test — it proves the pipeline works and produces all three
-#   verdicts. The numbers are NOT the REPORT.md numbers (mock data is tiny).
+# By default this runs on the bundled mock data as a smoke test: it exercises
+# every method, but the numbers won't match REPORT.md (the mock set is tiny).
 #
-# REAL DATA: the results in REPORT.md come from real institute data that is NOT
-#   in this repo (privacy — see README). If you hold that data locally under
-#   data/*.jsonl, reproduce the report with:
-#         REAL=1 bash run.sh
+# The REPORT.md numbers come from real data that isn't committed for privacy
+# reasons (see README). With that data under data/*.jsonl, set REAL=1 to
+# reproduce the report.
 #
-# Usage:  bash run.sh          # mock demo
-#         REAL=1 bash run.sh   # reproduce report (needs local real data)
-# ---------------------------------------------------------------------------
+# Usage:
+#   bash run.sh          # mock demo
+#   REAL=1 bash run.sh   # reproduce report (needs local real data)
 set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p results
 
 if [[ "${REAL:-0}" == "1" ]]; then
   CLAIMS=data/claims.jsonl;      NOTES=data/notes.jsonl;      LABELS=data/labels.jsonl;      S=""
-  echo ">>> REAL institute data (results are private — do not commit results/*.jsonl)"
+  echo ">>> REAL data (results are private; do not commit results/*.jsonl)"
 else
   CLAIMS=data/claims.mock.jsonl; NOTES=data/notes.mock.jsonl; LABELS=data/labels.mock.jsonl; S=".mock"
   echo ">>> SYNTHETIC mock data (demo only; numbers will not match REPORT.md)"

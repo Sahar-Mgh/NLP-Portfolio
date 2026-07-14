@@ -1,8 +1,8 @@
 """
-labels_from_worksheet.py -- turn a FILLED labeling worksheet into labels.jsonl.
-==============================================================================
-After you fill the `label` column in the worksheet (supported / contradicted /
-not_mentioned), this reads it back and writes the labels.jsonl that evaluate.py needs.
+Turn a filled labeling worksheet into labels.jsonl.
+
+After the `label` column is filled (supported / contradicted / not_mentioned), this
+reads the worksheet back and writes the labels.jsonl that evaluate.py expects.
 
 Run: python labels_from_worksheet.py --worksheet labeling/worksheet.mock.xlsx --out data/labels.mock.jsonl
 """

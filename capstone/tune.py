@@ -1,13 +1,14 @@
 """
-tune.py -- fair, tuned comparison of systems on the labelled set.
-=================================================================
-For each predictions file, re-derives the verdict from the stored support/
-contradiction scores under a grid of thresholds, picks the (tau_sup, tau_con)
-that maximise macro-F1 on a DEV split, and reports macro-F1/accuracy on the
-held-out TEST split. This avoids threshold cherry-picking and gives a defensible
-"best honest" number per system. Also prints the default-threshold (0.55) number.
+Tuned comparison of systems on the labelled set.
 
-Verdict rule (identical to faithcheck.judge_claim):
+For each predictions file, re-derives the verdict from the stored
+support/contradiction scores over a grid of thresholds, picks the
+(tau_sup, tau_con) that maximise macro-F1 on a dev split, and reports
+macro-F1/accuracy on the held-out test split. This keeps the thresholds
+from being tuned on the same data they're scored on. Also prints the
+number at the default threshold (0.55) for reference.
+
+Verdict rule (matches faithcheck.judge_claim):
     if con >= tau_con and con >= sup -> contradicted
     elif sup >= tau_sup             -> supported
     else                            -> not_mentioned

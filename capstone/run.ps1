@@ -1,24 +1,21 @@
-# ---------------------------------------------------------------------------
-# Runs the full pipeline end-to-end and prints the evaluation table.
+# Run the full pipeline and print the evaluation table.
 #
-# DEFAULT: runs on the bundled SYNTHETIC (mock) data that ships with the repo.
-#   Smoke test — proves the pipeline works and produces all three verdicts.
-#   The numbers are NOT the REPORT.md numbers (mock data is tiny).
+# By default this runs on the bundled mock data as a smoke test: it exercises
+# every method, but the numbers won't match REPORT.md (the mock set is tiny).
 #
-# REAL DATA: the REPORT.md results come from real institute data NOT in this
-#   repo (privacy — see README). If you hold it locally under data/*.jsonl:
-#         $env:REAL=1; .\run.ps1
+# The REPORT.md numbers come from real data that isn't committed for privacy
+# reasons (see README). With that data under data/*.jsonl, set REAL=1 to
+# reproduce the report.
 #
-# Usage:  powershell -ExecutionPolicy Bypass -File run.ps1            # mock demo
-#         $env:REAL=1; powershell -ExecutionPolicy Bypass -File run.ps1   # real
-# ---------------------------------------------------------------------------
+# Usage:  powershell -ExecutionPolicy Bypass -File run.ps1              # mock demo
+#         $env:REAL=1; powershell -ExecutionPolicy Bypass -File run.ps1   # reproduce report
 $ErrorActionPreference = "Stop"
 Set-Location -Path $PSScriptRoot
 New-Item -ItemType Directory -Force -Path results | Out-Null
 
 if ($env:REAL -eq "1") {
     $CLAIMS = "data/claims.jsonl"; $NOTES = "data/notes.jsonl"; $LABELS = "data/labels.jsonl"; $S = ""
-    Write-Host ">>> REAL institute data (results are private -- do not commit results/*.jsonl)"
+    Write-Host ">>> REAL data (results are private; do not commit results/*.jsonl)"
 } else {
     $CLAIMS = "data/claims.mock.jsonl"; $NOTES = "data/notes.mock.jsonl"; $LABELS = "data/labels.mock.jsonl"; $S = ".mock"
     Write-Host ">>> SYNTHETIC mock data (demo only; numbers will not match REPORT.md)"

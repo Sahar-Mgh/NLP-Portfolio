@@ -1,23 +1,24 @@
 """
-make_worksheet.py -- build a LABELING WORKSHEET so you can grade the checker fast.
-=================================================================================
-Reads claims.jsonl + notes.jsonl, retrieves each claim's most relevant notes, and
-writes an Excel file with ONE row per claim:
+Build a labeling worksheet for grading the grounding checker by hand.
 
-    claim_id | student_id | area | claim | note_1 .. note_k | label(EMPTY)
+Reads claims.jsonl and notes.jsonl, retrieves each claim's most relevant notes,
+and writes an Excel file with one row per claim:
 
-You open it in Excel and fill the `label` column with one of:
-    supported | contradicted | not_mentioned
-The relevant notes are already next to each claim, so it's fast. A second "guide"
-sheet holds the label definitions.  Then labels_from_worksheet.py -> labels.jsonl.
+    claim_id | student_id | area | claim | note_1 .. note_k | label
 
---sample N  takes a STRATIFIED sample of N claims (proportional per student, seeded),
-so you can label a representative ~90 instead of all 398.
+The label column is left blank. Open the file in Excel and fill it with one of
+supported / contradicted / not_mentioned; the relevant notes sit next to each
+claim so labeling is quick. A second "guide" sheet lists the label definitions.
+Then labels_from_worksheet.py turns the filled sheet into labels.jsonl.
 
-The worksheet deliberately does NOT show the model's prediction -- your labels must
-be independent of the system you are grading, or the evaluation is circular.
+--sample N takes a stratified sample of N claims (proportional per student,
+seeded) so you can label a representative subset instead of every claim.
 
-Run: python make_worksheet.py --claims data/claims.jsonl --notes data/notes.jsonl --out labeling/worksheet.xlsx --sample 90 --k 6
+The worksheet does not show the model's prediction: labels have to be
+independent of the system being graded, otherwise the evaluation is circular.
+
+Run:
+    python make_worksheet.py --claims data/claims.jsonl --notes data/notes.jsonl --out labeling/worksheet.xlsx --sample 90 --k 6
 """
 import argparse
 import random
@@ -60,7 +61,7 @@ def main():
     for n in notes:
         by_student_notes[n["student_id"]].append(n)
 
-    # ---- stratified sample (proportional per student) ----
+    # stratified sample (proportional per student)
     if args.sample and args.sample < len(claims):
         rnd = random.Random(args.seed)
         by_student_claims = defaultdict(list)
@@ -75,7 +76,7 @@ def main():
         rnd.shuffle(sample)
         claims = sample[:args.sample]
 
-    # ---- retrieval (precompute note embeddings once per student) ----
+    # retrieval (precompute note embeddings once per student)
     retr = Retriever()
     index = {}
     if retr.sbert:
@@ -91,7 +92,7 @@ def main():
         for rank, idx in enumerate(order[:args.k], 1):
             n = pool[idx]
             row[f"note_{rank}"] = f'[{n.get("date","")} · {n.get("title","")}] {n.get("text","")}'
-        row["label"] = ""      # <-- YOU FILL: supported / contradicted / not_mentioned
+        row["label"] = ""      # left blank for the labeler to fill: supported / contradicted / not_mentioned
         rows.append(row)
 
     df = pd.DataFrame(rows)

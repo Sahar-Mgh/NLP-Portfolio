@@ -1,28 +1,27 @@
 """
-faithcheck.py -- note-grounded faithfulness checker for LuV report claims.
-=========================================================================
-For each report CLAIM, retrieve the most relevant NOTES for that student, score
-each (note, claim) pair, and aggregate SummaC-style into a verdict, with a
-CITATION and a CONFIDENCE score:
+Check whether the claims in a LuV report are grounded in a student's case notes.
 
-    claim ──(retrieve top-k notes)──▶ score(note, claim) per note
-          ──(max-aggregate)────────▶ supported | contradicted | not_mentioned
-                                       (+ binary: grounded | needs_review)
-                                       + citation (the note that drove it) + confidence
+For each claim, retrieve the top-k relevant notes for that student, score every
+(note, claim) pair, and max-aggregate (SummaC-style) into a verdict of
+supported, contradicted, or not_mentioned (plus a grounded/needs_review
+binary). Each verdict comes with a citation to the note that drove it and a
+confidence score.
 
-Scorers (interchangeable, plug into the SAME retrieve->aggregate harness):
-  --method nli      zero-shot multilingual NLI (mDeBERTa-xnli)   [reads the evidence]
-  --method lexical  the previous project's TF-IDF + negation-cue heuristic  [old baseline]
+Two scorers share the same retrieve/aggregate harness:
+  --method nli      zero-shot multilingual NLI (mDeBERTa-xnli)
+  --method lexical  TF-IDF + negation-cue heuristic (lexical baseline)
 
-Improvements (diagnosed on the real LuV data -- see README):
-  --decompose       split each claim into atomic sub-claims and STRIP DATES, then
-                    require every sub-claim to hold. Fixes "missed support" where a
-                    claim adds specifics (e.g. 'im Juli 2024') that no single note states.
-  --gate_sim FLOAT  only count a note's CONTRADICTION if its retrieval similarity clears
-                    this floor -> suppresses false contradictions from off-topic notes.
+Two flags target failure modes seen on the LuV data (see README):
+  --decompose       split each claim into atomic sub-claims and strip dates,
+                    then require every sub-claim to hold. Recovers support that
+                    a single note misses when the claim adds specifics such as
+                    'im Juli 2024'.
+  --gate_sim FLOAT  only count a note's contradiction when its retrieval
+                    similarity clears this floor, which suppresses false
+                    contradictions from off-topic notes.
 
-No training -> no negation shortcut. Runs locally on CPU. Note embeddings are
-precomputed once per student so it scales to thousands of note-sentences.
+No training, so nothing learns a negation shortcut. Runs on CPU; note
+embeddings are precomputed once per student to scale to thousands of sentences.
 
 Run:
   python faithcheck.py --method nli --claims data/claims.jsonl --notes data/notes.jsonl --out results/preds_nli.jsonl
@@ -58,9 +57,7 @@ def write_jsonl(p, rows):
                        encoding="utf-8")
 
 
-# --------------------------------------------------------------------------- #
 # Claim decomposition: strip dates, split compound sentences into atomic claims.
-# --------------------------------------------------------------------------- #
 _MONTHS = ("Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|"
            "November|Dezember")
 _DATE_RX = re.compile(r"\b(?:im|am|seit|ab|bis|zum|vom|Anfang|Mitte|Ende)?\s*"
@@ -93,9 +90,7 @@ def decompose_claim(text):
     return [s if s.strip() else text]
 
 
-# --------------------------------------------------------------------------- #
 # Retrieval: multilingual SBERT if available, TF-IDF char n-gram fallback.
-# --------------------------------------------------------------------------- #
 class Retriever:
     def __init__(self):
         try:
@@ -135,9 +130,7 @@ class Retriever:
         return list(np.argsort(-sims)), sims
 
 
-# --------------------------------------------------------------------------- #
 # Scorers (same interface: .score(premise, hypothesis) -> ent/neutral/contra)
-# --------------------------------------------------------------------------- #
 class NLIScorer:
     name = "nli"
 
@@ -171,7 +164,7 @@ class LexicalScorer:
         from sklearn.feature_extraction.text import TfidfVectorizer
         from sklearn.preprocessing import normalize
         self._Tfidf, self._norm = TfidfVectorizer, normalize
-        self.desc = "lexical TF-IDF + negation-cue heuristic (previous project's baseline)"
+        self.desc = "TF-IDF + negation-cue heuristic (lexical baseline)"
 
     def _neg(self, text):
         t = text or ""
@@ -194,10 +187,8 @@ def make_scorer(method):
     return NLIScorer() if method == "nli" else LexicalScorer()
 
 
-# --------------------------------------------------------------------------- #
 # Per-claim decision: (optionally decompose) -> retrieve -> score -> aggregate.
 # With one sub-claim and gate_sim=0 this reproduces plain per-note max-aggregation.
-# --------------------------------------------------------------------------- #
 def judge_claim(claim_row, notes, retr, scorer, k, tau_sup, tau_con, doc_emb=None,
                 decompose=False, gate_sim=0.0, gate_ner=False, gate_keep_sim=2.0):
     texts = [n["text"] for n in notes]

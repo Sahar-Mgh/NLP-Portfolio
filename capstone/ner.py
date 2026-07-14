@@ -1,25 +1,23 @@
 """
-ner.py -- offline domain NER + topical gate for LuV faithfulness checking.
-=========================================================================
-TECHNIQUE: Named Entity Recognition. A pure-Python lexicon+regex recogniser
-(no model download) tags domain entities in claims and notes:
+Offline lexicon + regex NER and a topical gate for LuV faithfulness checking.
+
+Tags domain entities in claims and notes with no model download:
 
     PERSON   trainee / staff names
     AREA     ICF competence area (schulische Basiskompetenzen, ...)
-    SKILL    skill / trait / topic term, matched on morphology-robust ROOTS
+    SKILL    skill / trait / topic term, matched on morphology-robust roots
              (Förderbedarf / Förderung -> root "förder")
     DATE, MEASURE, NEG
 
-Why it helps THIS project: a note may only CONTRADICT a claim if it is about the
-same topic. Retrieval is scoped per student, so PERSON (the trainee) is shared by
-almost every pair and is USELESS for gating -- the gate therefore uses SKILL/AREA
-entities only. share_topic(claim, note) drives the contradiction gate in faithcheck.py.
+A note can only contradict a claim if it is about the same topic. Retrieval is
+scoped per student, so PERSON is shared by almost every pair and is useless for
+gating; the gate uses SKILL/AREA entities only. share_topic() drives the
+contradiction gate in faithcheck.py.
 """
 import re
 
 # Morphology-robust topic/skill roots (lowercase substrings; umlaut + ae/oe/ue
-# variants both listed so matching is robust to spelling). Ported + extended from
-# the v1 project's s6_ner.py SKILL_ROOTS with LuV vocabulary from the real claims.
+# variants both listed so matching is robust to spelling).
 TOPIC_ROOTS = [
     "förder", "foerder", "konzentr", "selbstständ", "selbständ", "selbstaend",
     "selbsteinschätz", "selbsteinschaetz", "motiv", "pünktl", "puenktl",
@@ -63,8 +61,8 @@ def _topic_keys(text):
 
 def share_topic(claim, note):
     """Do the claim and note share >=1 SKILL/AREA topic entity?
-    If the CLAIM has no detectable topic entity, we cannot gate -> return True
-    (don't block), so the gate never over-fires on claims the lexicon misses."""
+    If the claim has no detectable topic entity, gating isn't possible, so return
+    True (don't block) rather than over-fire on claims the lexicon misses."""
     ck = _topic_keys(claim)
     if not ck:
         return True
@@ -72,7 +70,7 @@ def share_topic(claim, note):
 
 
 def tag_entities(text):
-    """Full entity tagging for reporting/illustration (the NER technique itself)."""
+    """Full entity tagging for reporting/illustration."""
     t = text or ""
     return {
         "PERSON": PERSON_RE.findall(t),
