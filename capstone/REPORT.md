@@ -185,10 +185,9 @@ recall are well above baseline and the lexical system) but because the imbalance
 missed-support bucket cap raw accuracy. I report this openly rather than selecting a
 flattering metric.
 
-## 7. NLP techniques used (course mapping)
+## 7. NLP techniques used
 
-The capstone demonstrates the following techniques from the course (the minimum was
-four):
+The capstone demonstrates the following techniques:
 
 1. **Word/Sentence Embeddings** — multilingual SBERT retrieval (`faithcheck.py`).
 2. **Transfer Learning** — zero-shot transfer of an XNLI-pretrained model to the LuV
