@@ -47,8 +47,7 @@ the 5 participants) with the three labels. The gold distribution is **49 support
 38 not_mentioned / 3 contradicted** — contradictions are genuinely rare in real LuV
 data, so the **majority-class baseline accuracy is 0.544**. Labels were assigned from
 the notes only (not outside knowledge), and independently of any model output to keep
-the evaluation non-circular. The sample was labelled by a **single annotator** (the author,
-applying case-management domain knowledge), so inter-annotator agreement is not measured
+the evaluation non-circular. The sample was labelled by just me, so inter-annotator agreement is not measured
 (see §9).
 
 ## 3. Method
