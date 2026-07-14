@@ -13,15 +13,14 @@ sensitive and can't leave the institute.
 The full write-up — method, experiments, error analysis, references — is in
 [REPORT.md](REPORT.md). This README is the short "what is it / how to run it" version.
 
-## About the data (please read)
+## About the data
 
 The results in the report come from real, anonymised case notes about actual rehabilitation
 participants. That data can't leave the institute, so it is **not** in this repo.
 
 Instead I included small synthetic example files (the `*.mock.*` ones) with the same schema,
 so the pipeline still runs if you clone it. The real numbers in the report can only be
-reproduced on the real data, on the institute's own machines. The `.gitignore` is set up so
-the real data can never be committed by accident — only the synthetic files are tracked.
+reproduced on the real data.
 
 ## How to run it
 
