@@ -248,8 +248,6 @@ with the published limits of sentence-level NLI.
 
 ### References
 
-*(Verify formatting against your course's citation style.)*
-
 - Laban, P., Schnabel, T., Bennett, P. N., & Hearst, M. A. (2022). *SummaC: Re-Visiting
   NLI-based Models for Inconsistency Detection in Summarization.* TACL. arXiv:2111.09525.
 - Tang, L., Laban, P., & Durrett, G. (2024). *MiniCheck: Efficient Fact-Checking of LLMs on
