@@ -1,6 +1,6 @@
 # LuV-FaithCheck: Note-Grounded Faithfulness Checking for German Vocational Reports
 
-**NLP course capstone — Sahar Moghtaderi (solo project, 100% contribution to all components).**
+**NLP course capstone — Sahar Moghtaderi**
 
 > A zero-shot, locally-run system that checks whether sentences in a German
 > *Leistungs- und Verhaltensbeurteilung* (LuV) report are grounded in the trainee's
