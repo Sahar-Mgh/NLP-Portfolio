@@ -7,7 +7,7 @@ inference (NLI)** to decide whether the claim is **supported**, **contradicted**
 **not mentioned** — flagging the sentences a reviewer should check, and giving the note it
 relied on as a citation plus a confidence score.
 
-It's zero-shot (no training) and runs locally on CPU, which matters because the real data is
+It's zero-shot and runs locally on CPU, which matters because the real data is
 sensitive and can't leave the institute.
 
 The full write-up — method, experiments, error analysis, references — is in
